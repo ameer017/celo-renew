@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 function Navbar() {
   const [connected, toggleConnect] = useState(false);
@@ -37,56 +38,54 @@ function Navbar() {
   }
 
   async function connectWebsite() {
-    const liskSepoliaChainId = "0x106a";
-    const liskSepoliaChainParams = {
-      chainId: liskSepoliaChainId,
-      chainName: "Lisk Sepolia Test Network",
+    const celoTestnetChainId = "0xaef3"; // Chain ID for Celo Alfajores Testnet
+    const celoTestnetChainParams = {
+      chainId: celoTestnetChainId,
+      chainName: "Celo Alfajores Testnet",
       nativeCurrency: {
-        name: "Lisk Sepolia ETH",
-        symbol: "ETH",
+        name: "Celo",
+        symbol: "CELO",
         decimals: 18,
       },
-      rpcUrls: ["https://rpc.sepolia-api.lisk.com"],
-      blockExplorerUrls: ["https://sepolia-blockscout.lisk.com/"],
+      rpcUrls: ["https://alfajores-forno.celo-testnet.org"],
+      blockExplorerUrls: ["https://alfajores-blockscout.celo-testnet.org/"],
     };
-
+  
     try {
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
-
-      if (chainId !== liskSepoliaChainId) {
+  
+      if (chainId !== celoTestnetChainId) {
         try {
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: liskSepoliaChainId }],
+            params: [{ chainId: celoTestnetChainId }],
           });
         } catch (switchError) {
           if (switchError.code === 4902) {
             try {
               await window.ethereum.request({
                 method: "wallet_addEthereumChain",
-                params: [liskSepoliaChainParams],
+                params: [celoTestnetChainParams],
               });
             } catch (addError) {
-              console.error("Failed to add Lisk Sepolia chain:", addError);
+              console.error("Failed to add Celo Alfajores chain:", addError);
               return;
             }
           } else {
-            console.error(
-              "Failed to switch to Lisk Sepolia chain:",
-              switchError
-            );
+            console.error("Failed to switch to Celo Alfajores chain:", switchError);
             return;
           }
         }
       }
-
+  
       await window.ethereum.request({ method: "eth_requestAccounts" });
       updateButton();
-      console.log("Connected to MetaMask and Lisk Sepolia network");
+      console.log("Connected to MetaMask and Celo Alfajores network");
       await getAddress(); // Ensure getAddress is awaited to handle async
       window.location.replace(location.pathname);
     } catch (error) {
       console.error("Failed to connect to MetaMask:", error);
+      toast.error("Error Connecting wallet");
     }
   }
 
