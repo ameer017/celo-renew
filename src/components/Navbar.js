@@ -16,17 +16,17 @@ function Navbar() {
     setNav(!nav);
   };
 
-  async function getAddress() {
-    try {
-      const ethers = require("ethers");
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const addr = await signer.getAddress();
-      updateAddress(addr);
-    } catch (error) {
-      console.error("Failed to get address:", error);
-    }
-  }
+  // async function getAddress() {
+  //   try {
+  //     const ethers = require("ethers");
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     const signer = provider.getSigner();
+  //     const addr = await signer.getAddress();
+  //     updateAddress(addr);
+  //   } catch (error) {
+  //     console.error("Failed to get address:", error);
+  //   }
+  // }
 
   function updateButton() {
     const ethereumButton = document.querySelector(".enableEthereumButton");
@@ -81,7 +81,7 @@ function Navbar() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       updateButton();
       console.log("Connected to MetaMask and Celo Alfajores network");
-      await getAddress(); // Ensure getAddress is awaited to handle async
+      // await getAddress();
       window.location.replace(location.pathname);
     } catch (error) {
       console.error("Failed to connect to MetaMask:", error);
@@ -93,7 +93,7 @@ function Navbar() {
     let val = window.ethereum.isConnected();
     if (val) {
       // console.log("is it because of this?", val);
-      getAddress();
+      // getAddress();
       toggleConnect(val);
       updateButton();
     }
